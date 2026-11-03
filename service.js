@@ -1,7 +1,8 @@
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { dataDir, installation, profile, root } from './config.js';
+import { installAgent } from './launch-agent.js';
 import { run } from './process.js';
 
 const label = `dev.semi.agent.${profile}`;
@@ -51,17 +52,7 @@ try {
 <key>StandardOutPath</key><string>${escapeXml(join(dataDir, 'service.log'))}</string>
 <key>StandardErrorPath</key><string>${escapeXml(join(dataDir, 'service-error.log'))}</string>
 </dict></plist>`;
-    writeFileSync(file, plist, { mode: 0o600 });
-    await run('/usr/bin/plutil', ['-lint', file]);
-    let loaded = false;
-    try {
-      await run('/bin/launchctl', ['print', service]);
-      loaded = true;
-    } catch {
-      loaded = false;
-    }
-    if (loaded) await run('/bin/launchctl', ['bootout', service]);
-    await run('/bin/launchctl', ['bootstrap', domain, file]);
+    await installAgent({ domain, service, file, plist });
     console.log(
       'Semi service installed. Run pnpm run service status to inspect it.',
     );

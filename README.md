@@ -114,6 +114,8 @@ pnpm run service status
 
 The macOS LaunchAgent starts Semi at login and restarts it after a failure. Keep the checkout at the same path. Reinstall the service after changing Node or checkout locations or selecting a different Slack app. Logs are `.local/profiles/personal/service.log` and `.local/profiles/personal/service-error.log`.
 
+Reinstallation validates the new configuration before stopping the service and waits up to 30 seconds for macOS to remove the old registration. If loading the replacement fails and the service is confirmed absent, Semi restores the previous configuration and reloads it if it was previously loaded. An uncertain installation or failed recovery is reported as an error; inspect `pnpm run service status` before retrying.
+
 ```sh
 pnpm run service uninstall
 ```

@@ -12,8 +12,11 @@ export async function run(command, args, options = {}) {
     });
     return stdout;
   } catch (error) {
-    throw new Error(
-      `${command} failed (${error.code ?? 'timeout'}); delivery may be unconfirmed.`,
+    throw Object.assign(
+      new Error(
+        `${command} failed (${error.code ?? 'timeout'}); delivery may be unconfirmed.`,
+      ),
+      { code: error.code },
     );
   }
 }

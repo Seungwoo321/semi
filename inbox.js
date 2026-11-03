@@ -22,11 +22,7 @@ export async function receiveMessage(store, config, message, event, client) {
   let original = message.thread_ts
     ? store.messageRun(message.channel, message.thread_ts)
     : null;
-  if (
-    !original &&
-    message.channel === store.setting('dmChannel') &&
-    !message.thread_ts
-  ) {
+  if (!original && message.channel === store.setting('dmChannel')) {
     const target = store.target(store.setting('dmTarget') || '');
     if (target) original = { jobName: 'DM', target, channel: message.channel };
     else {

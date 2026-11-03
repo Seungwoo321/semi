@@ -2,6 +2,8 @@
 
 # Semi
 
+[한국어 사용 가이드](docs/guide.ko.md) · [pnpm installation](https://pnpm.io/installation)
+
 Schedule your local coding agents from Slack. Run configurable prompts or skills in **Orca or cmux**, collect **Codex or Claude Code** results in selected channels, and talk to them through your personal bot's DM or a report thread.
 
 Semi is self-hosted: **each user installs their own Slack app and runs Semi on their Mac**. Installing the Slack app alone does not run the scheduler. There is no central service or separate LLM API subscription; your existing coding-agent session performs the work with its own authentication and permissions.
@@ -28,6 +30,7 @@ Semi on your Mac → selected Orca / cmux sessions
 ## Requirements
 
 - macOS and Node.js **24 or later**.
+- pnpm **12.15.0** (pinned in `package.json`).
 - [Slack CLI](https://docs.slack.dev/tools/slack-cli/) authenticated with `slack login`.
 - Orca and/or cmux with their CLI available and agent status hooks enabled.
 - An existing local Codex or Claude Code terminal session. Remote sessions and Orca's structured chat surfaces are not terminal targets.
@@ -37,10 +40,10 @@ Semi on your Mac → selected Orca / cmux sessions
 ```sh
 git clone https://github.com/Seungwoo321/semi.git
 cd semi
-npm ci
+pnpm install --frozen-lockfile
 slack login
 slack app install --team YOUR_WORKSPACE_ID --environment deployed
-npm run setup -- --app YOUR_APP_ID --team YOUR_WORKSPACE_ID --owner YOUR_USER_ID
+pnpm run setup --app YOUR_APP_ID --team YOUR_WORKSPACE_ID --owner YOUR_USER_ID
 ```
 
 `slack auth list` shows your workspace and user IDs. Use the app ID printed by the install command. `setup` derives `<Slack username>-semi` by default; append `--name "My Semi"` to choose another name. App names and installation IDs are stored privately per profile, while the repository manifest stays generic.
@@ -60,10 +63,10 @@ SLACK_APP_TOKEN=xapp-your-app-token
 
 ```sh
 chmod 600 .local/profiles/personal/.env
-npm start
+pnpm start
 ```
 
-Tokens are read from the local file and never embedded in the login service or stored in Git. The app connects through Socket Mode. Production installations run with `npm start`; `slack run` is the separate development workflow for an app installed with `--environment local`.
+Tokens are read from the local file and never embedded in the login service or stored in Git. The app connects through Socket Mode. Production installations run with `pnpm start`; `slack run` is the separate development workflow for an app installed with `--environment local`.
 
 Add the bot to every destination channel using Slack's **Add apps** action. App installation belongs to a workspace, not to a single channel. Private destination channels must explicitly include the bot.
 
@@ -102,17 +105,17 @@ The source session must still exist. Semi does not silently create a replacement
 
 ## Run in the background
 
-After `npm start` connects successfully, stop that foreground process with Ctrl+C and install the login service:
+After `pnpm start` connects successfully, stop that foreground process with Ctrl+C and install the login service:
 
 ```sh
-npm run service -- install
-npm run service -- status
+pnpm run service install
+pnpm run service status
 ```
 
 The macOS LaunchAgent starts Semi at login and restarts it after a failure. Keep the checkout at the same path. Reinstall the service after changing Node or checkout locations or selecting a different Slack app. Logs are `.local/profiles/personal/service.log` and `.local/profiles/personal/service-error.log`.
 
 ```sh
-npm run service -- uninstall
+pnpm run service uninstall
 ```
 
 Uninstalling the service retains schedules and local configuration. No inbound network port, public server, or router configuration is required.
@@ -125,15 +128,15 @@ Use an explicit profile for each separate Slack installation:
 
 ```sh
 SEMI_PROFILE=work slack app install --team WORK_WORKSPACE_ID --environment deployed
-SEMI_PROFILE=work npm run setup -- --app WORK_APP_ID --team WORK_WORKSPACE_ID --owner WORK_USER_ID
+SEMI_PROFILE=work pnpm run setup --app WORK_APP_ID --team WORK_WORKSPACE_ID --owner WORK_USER_ID
 ```
 
 Place that app's tokens in `.local/profiles/work/.env`, then run:
 
 ```sh
-SEMI_PROFILE=work npm start
-SEMI_PROFILE=work npm run service -- install
-SEMI_PROFILE=work npm run service -- status
+SEMI_PROFILE=work pnpm start
+SEMI_PROFILE=work pnpm run service install
+SEMI_PROFILE=work pnpm run service status
 ```
 
 Stop the foreground instance before installing its service. The personal and work services can run simultaneously. Each accepts only its configured workspace and owner. Sessions assigned to one profile are excluded from the other profile's selectors, including replies. Use separate agent sessions for personal and company work.
@@ -169,8 +172,8 @@ Scheduled tasks give the agent a run-specific `node cli.js report RUN_ID` comman
 ## Development
 
 ```sh
-npm test
-npm run lint
+pnpm test
+pnpm run lint
 ```
 
 Tests cover fan-out, DM/channel routing, waiting and ambiguous sends, restart recovery, thread mapping, duplicate replies, stale sessions, bot identity, owner authorization, and profile separation. No separate build or typechecker is configured. The project uses Slack's Bolt blank template and retains its MIT notice.

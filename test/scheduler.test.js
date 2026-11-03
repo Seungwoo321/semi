@@ -370,6 +370,51 @@ test('DM requests require the configured owner/workspace and preserve the first 
   assert.equal(store.waiting().length, 1);
 });
 
+test('unlinked DM threads bind once and retain their session after changing the DM target', async (t) => {
+  const store = new Store(':memory:');
+  t.after(() => store.close());
+  store.setSetting('dmChannel', 'DOWNER');
+  store.putTarget(first);
+  store.putTarget(second);
+  selectDmTarget(store, first.id);
+  const posts = [];
+  const client = { chat: { postMessage: async (body) => posts.push(body) } };
+  const config = { teamId: 'TOWNER', ownerId: 'UOWNER' };
+  const message = {
+    user: 'UOWNER',
+    channel: 'DOWNER',
+    text: 'Report progress',
+    ts: '20.000002',
+    thread_ts: '20.000001',
+  };
+  const event = { event_id: 'EVTHREAD', team_id: 'TOWNER' };
+  await receiveMessage(store, config, message, event, client);
+  await receiveMessage(store, config, message, event, client);
+  assert.equal(posts.length, 1);
+  assert.equal(posts[0].thread_ts, message.thread_ts);
+  assert.equal(store.waiting()[0].target.id, first.id);
+  selectDmTarget(store, second.id);
+  await receiveMessage(
+    store,
+    config,
+    { ...message, ts: '20.000003' },
+    { ...event, event_id: 'EVFOLLOWUP' },
+    client,
+  );
+  assert.deepEqual(
+    store.waiting().map((run) => run.target.id),
+    [first.id, first.id],
+  );
+  await receiveMessage(
+    store,
+    config,
+    { ...message, channel: 'CUNLINKED' },
+    { ...event, event_id: 'EVCHANNEL' },
+    client,
+  );
+  assert.equal(store.waiting().length, 2);
+});
+
 test('default reporting uses DM while an explicit session destination takes precedence', (t) => {
   const store = new Store(':memory:');
   t.after(() => store.close());

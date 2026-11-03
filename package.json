@@ -6,8 +6,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "lint": "npx @biomejs/biome check",
-    "lint:fix": "npx @biomejs/biome check --write",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
     "start": "node app.js",
     "send": "node cli.js send",
     "test": "node --test",
@@ -38,5 +38,6 @@
   },
   "engines": {
     "node": ">=24"
-  }
+  },
+  "packageManager": "pnpm@12.15.0"
 }

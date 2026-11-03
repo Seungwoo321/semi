@@ -63,7 +63,7 @@ try {
     if (loaded) await run('/bin/launchctl', ['bootout', service]);
     await run('/bin/launchctl', ['bootstrap', domain, file]);
     console.log(
-      'Semi service installed. Run npm run service -- status to inspect it.',
+      'Semi service installed. Run pnpm run service status to inspect it.',
     );
   } else if (action === 'uninstall') {
     await run('/bin/launchctl', ['bootout', service]);
@@ -80,7 +80,7 @@ try {
         .join('\n'),
     );
   } else {
-    console.log('Usage: npm run service -- install|status|uninstall');
+    console.log('Usage: pnpm run service install|status|uninstall');
   }
 } catch (error) {
   console.error(error.message);

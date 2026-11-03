@@ -15,7 +15,7 @@ ambiguous delivery. A report and its thread replies belong to the original sessi
 
 ## Before you finish
 
-Run `npm run lint` and `npm test` after source changes.
+Run `pnpm run lint` and `pnpm test` after source changes.
 
 ## Code Style
 

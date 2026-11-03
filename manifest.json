@@ -1,0 +1,51 @@
+{
+  "display_information": {
+    "name": "Semi",
+    "description": "Schedule and talk to your local coding-agent sessions"
+  },
+  "features": {
+    "slash_commands": [
+      {
+        "command": "/semi",
+        "description": "Orca/cmux 에이전트 예약과 결과 채널 관리",
+        "usage_hint": "new | list | edit ID | pause ID | resume ID | status ID",
+        "should_escape": false
+      }
+    ],
+    "app_home": {
+      "home_tab_enabled": false,
+      "messages_tab_enabled": true,
+      "messages_tab_read_only_enabled": false
+    },
+    "bot_user": {
+      "display_name": "Semi",
+      "always_online": true
+    }
+  },
+  "oauth_config": {
+    "scopes": {
+      "bot": [
+        "chat:write",
+        "commands",
+        "channels:history",
+        "groups:history",
+        "im:write",
+        "im:history",
+        "users:read"
+      ]
+    }
+  },
+  "settings": {
+    "event_subscriptions": {
+      "bot_events": ["message.channels", "message.groups", "message.im"]
+    },
+    "socket_mode_enabled": true,
+    "org_deploy_enabled": false,
+    "interactivity": {
+      "is_enabled": true
+    },
+    "token_rotation_enabled": false,
+    "app_level_token_rotation_enabled": false,
+    "is_mcp_enabled": false
+  }
+}

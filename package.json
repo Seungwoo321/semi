@@ -1,0 +1,42 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "semi-agent",
+  "version": "1.0.0",
+  "description": "Schedule prompts for local Orca and cmux coding-agent sessions from Slack",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "lint": "npx @biomejs/biome check",
+    "lint:fix": "npx @biomejs/biome check --write",
+    "start": "node app.js",
+    "send": "node cli.js send",
+    "test": "node --test",
+    "service": "node service.js",
+    "setup": "node setup.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Seungwoo321/semi.git"
+  },
+  "keywords": [
+    "slack",
+    "bolt",
+    "slackapi"
+  ],
+  "author": "Seungwoo Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Seungwoo321/semi/issues"
+  },
+  "homepage": "https://github.com/Seungwoo321/semi#readme",
+  "dependencies": {
+    "@slack/bolt": "^5.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.4",
+    "@slack/cli-hooks": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
